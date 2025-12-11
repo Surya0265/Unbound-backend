@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🌱 Seeding database...');
+    console.log('Seeding database...');
 
     // Create default admin user
     const adminApiKey = `admin_${uuidv4().replace(/-/g, '')}`;
@@ -19,7 +19,7 @@ async function main() {
             credits: 1000,
         },
     });
-    console.log(`✅ Admin created with API key: ${adminApiKey}`);
+    console.log(`Admin created with API key: ${adminApiKey}`);
 
     // Create a test member user
     const memberApiKey = `member_${uuidv4().replace(/-/g, '')}`;
@@ -34,7 +34,7 @@ async function main() {
             credits: 100,
         },
     });
-    console.log(`✅ Member created with API key: ${memberApiKey}`);
+    console.log(`Member created with API key: ${memberApiKey}`);
 
     // Seed default rules
     const defaultRules = [
@@ -97,17 +97,17 @@ async function main() {
             },
         });
     }
-    console.log(`✅ Created ${defaultRules.length} default rules`);
+    console.log(`Created ${defaultRules.length} default rules`);
 
-    console.log('🎉 Seeding completed!');
-    console.log('\n📋 Default credentials:');
+    console.log('Seeding completed!');
+    console.log('\nDefault credentials:');
     console.log(`   Admin API Key: ${adminApiKey}`);
     console.log(`   Member API Key: ${memberApiKey}`);
 }
 
 main()
     .catch((e) => {
-        console.error('❌ Seeding failed:', e);
+        console.error('Seeding failed:', e);
         process.exit(1);
     })
     .finally(async () => {

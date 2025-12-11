@@ -1,0 +1,697 @@
+{
+    "info": {
+        "_postman_id": "command-gateway-api",
+        "name": "Command Gateway API",
+        "description": "API collection for Command Gateway Backend - a secure command execution gateway with rule-based access control, approval workflows, and audit logging.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3001",
+            "type": "string"
+        },
+        {
+            "key": "adminApiKey",
+            "value": "admin_YOUR_API_KEY_HERE",
+            "type": "string"
+        },
+        {
+            "key": "memberApiKey",
+            "value": "member_YOUR_API_KEY_HERE",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Health",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if the server is running"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "me"
+                            ]
+                        },
+                        "description": "Get details of the currently authenticated user"
+                    }
+                },
+                {
+                    "name": "List All Users (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "List all users (Admin only)"
+                    }
+                },
+                {
+                    "name": "Create User (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"New User\",\n    \"role\": \"member\",\n    \"tier\": \"junior\",\n    \"credits\": 100\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users"
+                            ]
+                        },
+                        "description": "Create a new user (Admin only). Role: admin/member. Tier: junior/senior/lead."
+                    }
+                },
+                {
+                    "name": "Update User (Admin)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Name\",\n    \"role\": \"member\",\n    \"tier\": \"senior\",\n    \"credits\": 200\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "USER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Update a user (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete User (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "USER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Delete a user (Admin only)"
+                    }
+                },
+                {
+                    "name": "Add Credits (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 50\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/:id/credits",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                ":id",
+                                "credits"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "USER_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Add or subtract credits from a user (Admin only). Use negative amount to subtract."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Rules",
+            "item": [
+                {
+                    "name": "List All Rules",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules"
+                            ]
+                        },
+                        "description": "List all rules ordered by priority"
+                    }
+                },
+                {
+                    "name": "Get Rule by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "RULE_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Get a single rule by ID"
+                    }
+                },
+                {
+                    "name": "Create Rule (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"pattern\": \"^npm\\\\s+install\",\n    \"action\": \"AUTO_ACCEPT\",\n    \"priority\": 60,\n    \"approvalThreshold\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules"
+                            ]
+                        },
+                        "description": "Create a new rule (Admin only). Actions: AUTO_ACCEPT, AUTO_REJECT, REQUIRE_APPROVAL"
+                    }
+                },
+                {
+                    "name": "Update Rule (Admin)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"pattern\": \"^npm\\\\s+install\",\n    \"action\": \"REQUIRE_APPROVAL\",\n    \"priority\": 70,\n    \"approvalThreshold\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "RULE_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Update a rule (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Rule (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "RULE_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Delete a rule (Admin only)"
+                    }
+                },
+                {
+                    "name": "Test Pattern (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"pattern\": \"^npm\\\\s+install\",\n    \"testCommand\": \"npm install express\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/rules/test",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "rules",
+                                "test"
+                            ]
+                        },
+                        "description": "Test if a regex pattern matches a command (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Commands",
+            "item": [
+                {
+                    "name": "Submit Command",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{memberApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"command_text\": \"ls -la\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands"
+                            ]
+                        },
+                        "description": "Submit a command for execution. Returns status: executed, rejected, or awaiting_approval"
+                    }
+                },
+                {
+                    "name": "Get Command History",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands?limit=50&offset=0",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "50"
+                                },
+                                {
+                                    "key": "offset",
+                                    "value": "0"
+                                }
+                            ]
+                        },
+                        "description": "Get command history. Admin sees all, members see only their own commands."
+                    }
+                },
+                {
+                    "name": "Get Command by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "COMMAND_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Get a single command by ID"
+                    }
+                },
+                {
+                    "name": "Get Pending Approvals (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands/pending/approvals",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands",
+                                "pending",
+                                "approvals"
+                            ]
+                        },
+                        "description": "Get all commands pending approval (Admin only)"
+                    }
+                },
+                {
+                    "name": "Approve/Reject Command (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"decision\": \"approved\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands/:id/approve",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands",
+                                ":id",
+                                "approve"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "COMMAND_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Approve or reject a command (Admin only). Decision: approved or rejected"
+                    }
+                },
+                {
+                    "name": "Resubmit Command",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{memberApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/commands/:id/resubmit",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "commands",
+                                ":id",
+                                "resubmit"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "COMMAND_ID_HERE"
+                                }
+                            ]
+                        },
+                        "description": "Resubmit a previously rejected or pending command"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Audit",
+            "item": [
+                {
+                    "name": "Get Audit Logs (Admin)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-Key",
+                                "value": "{{adminApiKey}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/audit?limit=100&offset=0",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "audit"
+                            ],
+                            "query": [
+                                {
+                                    "key": "userId",
+                                    "value": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "action",
+                                    "value": "",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                },
+                                {
+                                    "key": "offset",
+                                    "value": "0"
+                                }
+                            ]
+                        },
+                        "description": "Get audit logs with optional filters (Admin only). Filter by userId or action type."
+                    }
+                }
+            ]
+        }
+    ]
+}
