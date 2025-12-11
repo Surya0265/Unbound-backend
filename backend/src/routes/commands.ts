@@ -5,6 +5,7 @@ import { matchCommand, getEffectiveAction, getRequiredApprovals } from '../../..
 import { executeCommand, rejectCommand, setAwaitingApproval } from '../../../../safety/backend/src/services/commandExecutor';
 import { addApproval, getPendingApprovals } from '../../../../safety/backend/src/services/approvalService';
 import { logAudit } from '../../../../safety/backend/src/services/auditService';
+import { notifyAdminsPendingApproval, notifyUserCommandResult } from '../services/emailService';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -142,6 +143,9 @@ router.post('/', authenticate, async (req, res) => {
                 const requiredApprovals = getRequiredApprovals(matchedRule.approvalThreshold, user.tier);
                 await setAwaitingApproval(user, command, requiredApprovals);
 
+                // Send email notification to admins
+                notifyAdminsPendingApproval(command.id, command_text, user.name, requiredApprovals);
+
                 return res.json({
                     id: command.id,
                     status: 'awaiting_approval',
@@ -256,6 +260,11 @@ router.post('/:id/approve', authenticate, requireAdmin, async (req, res) => {
 
         const command = await prisma.command.findUnique({
             where: { id },
+            include: {
+                user: {
+                    select: { email: true, name: true },
+                },
+            },
         });
 
         if (!command) {
@@ -270,6 +279,15 @@ router.post('/:id/approve', authenticate, requireAdmin, async (req, res) => {
         }
 
         const result = await addApproval(command, req.user!, decision);
+
+        // Send email notification to command owner
+        notifyUserCommandResult(
+            command.user.email,
+            command.id,
+            command.commandText,
+            decision,
+            req.user!.name
+        );
 
         res.json(result);
     } catch (error) {

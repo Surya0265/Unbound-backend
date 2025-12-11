@@ -6,20 +6,37 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('Seeding database...');
 
-    // Create default admin user
-    const adminApiKey = `admin_${uuidv4().replace(/-/g, '')}`;
+    // Create admin user 1 - Surya Prakash
+    const admin1ApiKey = `admin_${uuidv4().replace(/-/g, '')}`;
     const admin = await prisma.user.upsert({
         where: { apiKey: 'admin_default_key_12345' },
         update: {},
         create: {
-            name: 'Default Admin',
-            apiKey: adminApiKey,
+            name: 'Surya Prakash',
+            email: 'suryaprakashb265@gmail.com',
+            apiKey: admin1ApiKey,
             role: 'admin',
             tier: 'lead',
             credits: 1000,
         },
     });
-    console.log(`Admin created with API key: ${adminApiKey}`);
+    console.log(`Admin 1 created with API key: ${admin1ApiKey}`);
+
+    // Create admin user 2 - Surya Balakrishnan
+    const admin2ApiKey = `admin_${uuidv4().replace(/-/g, '')}`;
+    await prisma.user.upsert({
+        where: { apiKey: 'admin_default_key_67890' },
+        update: {},
+        create: {
+            name: 'Surya Balakrishnan',
+            email: 'suryabalakrishnan265@gmail.com',
+            apiKey: admin2ApiKey,
+            role: 'admin',
+            tier: 'lead',
+            credits: 1000,
+        },
+    });
+    console.log(`Admin 2 created with API key: ${admin2ApiKey}`);
 
     // Create a test member user
     const memberApiKey = `member_${uuidv4().replace(/-/g, '')}`;
@@ -28,6 +45,7 @@ async function main() {
         update: {},
         create: {
             name: 'Test Member',
+            email: '23n257@psgtech.ac.in',
             apiKey: memberApiKey,
             role: 'member',
             tier: 'junior',
@@ -101,7 +119,8 @@ async function main() {
 
     console.log('Seeding completed!');
     console.log('\nDefault credentials:');
-    console.log(`   Admin API Key: ${adminApiKey}`);
+    console.log(`   Admin 1 API Key: ${admin1ApiKey}`);
+    console.log(`   Admin 2 API Key: ${admin2ApiKey}`);
     console.log(`   Member API Key: ${memberApiKey}`);
 }
 

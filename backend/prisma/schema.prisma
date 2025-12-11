@@ -43,6 +43,7 @@ model User {
   id        String   @id @default(uuid())
   apiKey    String   @unique @map("api_key")
   name      String
+  email     String?
   role      Role     @default(member)
   tier      UserTier @default(junior)
   credits   Int      @default(100)

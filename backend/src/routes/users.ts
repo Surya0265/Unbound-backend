@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { authenticate, requireAdmin } from '../../../../safety/backend/src/middleware/auth';
 import { logAudit } from '../../../../safety/backend/src/services/auditService';
+import { sendWelcomeEmail } from '../services/emailService';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -57,7 +58,7 @@ router.get('/', authenticate, requireAdmin, async (req, res) => {
 // Create new user (admin only)
 router.post('/', authenticate, requireAdmin, async (req, res) => {
     try {
-        const { name, role = 'member', tier = 'junior', credits = 100 } = req.body;
+        const { name, email, role = 'member', tier = 'junior', credits = 100 } = req.body;
 
         if (!name || typeof name !== 'string') {
             return res.status(400).json({ error: 'Name is required.' });
@@ -77,6 +78,7 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
         const user = await prisma.user.create({
             data: {
                 name,
+                email: email || null,
                 apiKey,
                 role,
                 tier,
@@ -91,12 +93,18 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
             tier: user.tier,
         });
 
+        // Send welcome email if email provided
+        if (email) {
+            sendWelcomeEmail(email, name, apiKey, role);
+        }
+
         // Return user with API key (only shown once!)
         res.status(201).json({
             message: 'User created successfully. Save the API key - it will only be shown once!',
             user: {
                 id: user.id,
                 name: user.name,
+                email: user.email,
                 role: user.role,
                 tier: user.tier,
                 credits: user.credits,

@@ -279,10 +279,29 @@ Server runs on `http://localhost:3001`
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `PORT` | Server port (default: 3001) |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `PORT` | Server port (default: 3001) | No |
+| `SMTP_HOST` | SMTP server hostname (e.g., smtp.gmail.com) | No |
+| `SMTP_PORT` | SMTP port (587 for TLS, 465 for SSL) | No |
+| `SMTP_USER` | SMTP username/email | No |
+| `SMTP_PASS` | SMTP password or app password | No |
+| `SMTP_FROM` | Sender email address | No |
+
+> **Note:** Email notifications are optional. If SMTP is not configured, the app works without email.
+
+---
+
+## Email Notifications
+
+When SMTP is configured, the system sends emails for:
+
+| Event | Recipient | Description |
+|-------|-----------|-------------|
+| Command Pending | All Admins | New command requires approval |
+| Command Approved/Rejected | User | Approval decision notification |
+| User Created | New User | Welcome email with API key |
 
 ---
 
