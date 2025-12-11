@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
-import { authenticate, requireAdmin } from '../../../../safety/backend/src/middleware/auth';
-import { logAudit } from '../../../../safety/backend/src/services/auditService';
+import { authenticate, requireAdmin } from '../middleware/auth';
+import { logAudit } from '../services/auditService';
 import { sendWelcomeEmail } from '../services/emailService';
 
 const router = Router();

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authenticate, requireAdmin } from '../../../../safety/backend/src/middleware/auth';
-import { validateRegexPattern, detectRuleConflict } from '../../../../safety/backend/src/services/ruleEngine';
-import { logAudit } from '../../../../safety/backend/src/services/auditService';
+import { authenticate, requireAdmin } from '../middleware/auth';
+import { validateRegexPattern, detectRuleConflict } from '../services/ruleEngine';
+import { logAudit } from '../services/auditService';
 
 const router = Router();
 const prisma = new PrismaClient();

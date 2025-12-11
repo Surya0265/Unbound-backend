@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authenticate, requireAdmin, requireCredits } from '../../../../safety/backend/src/middleware/auth';
-import { matchCommand, getEffectiveAction, getRequiredApprovals } from '../../../../safety/backend/src/services/ruleEngine';
-import { executeCommand, rejectCommand, setAwaitingApproval } from '../../../../safety/backend/src/services/commandExecutor';
-import { addApproval, getPendingApprovals } from '../../../../safety/backend/src/services/approvalService';
-import { logAudit } from '../../../../safety/backend/src/services/auditService';
+import { authenticate, requireAdmin, requireCredits } from '../middleware/auth';
+import { matchCommand, getEffectiveAction, getRequiredApprovals } from '../services/ruleEngine';
+import { executeCommand, rejectCommand, setAwaitingApproval } from '../services/commandExecutor';
+import { addApproval, getPendingApprovals } from '../services/approvalService';
+import { logAudit } from '../services/auditService';
 import { notifyAdminsPendingApproval, notifyUserCommandResult } from '../services/emailService';
 
 const router = Router();
