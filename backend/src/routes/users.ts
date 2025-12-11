@@ -8,6 +8,61 @@ import { sendWelcomeEmail } from '../services/emailService';
 const router = Router();
 const prisma = new PrismaClient();
 
+// Login endpoint - validates API key and returns user info
+router.post('/login', async (req, res) => {
+    const startTime = Date.now();
+    console.log('[LOGIN] Request received at:', new Date().toISOString());
+
+    try {
+        const apiKey = req.headers['x-api-key'] as string || req.body.apiKey;
+
+        if (!apiKey) {
+            console.log('[LOGIN] Error: No API key provided');
+            return res.status(401).json({
+                error: 'Missing API key.',
+                hint: 'Provide API key in X-API-Key header or request body as "apiKey"'
+            });
+        }
+
+        console.log('[LOGIN] Attempting to find user with API key...');
+
+        const user = await prisma.user.findUnique({
+            where: { apiKey },
+            select: {
+                id: true,
+                name: true,
+                role: true,
+                tier: true,
+                credits: true,
+                createdAt: true,
+            },
+        });
+
+        if (!user) {
+            console.log('[LOGIN] Error: Invalid API key - user not found');
+            return res.status(401).json({ error: 'Invalid API key.' });
+        }
+
+        console.log(`[LOGIN] Success: User "${user.name}" logged in (${Date.now() - startTime}ms)`);
+
+        res.json({
+            message: 'Login successful',
+            user,
+        });
+    } catch (error) {
+        console.error('[LOGIN] Error occurred:', {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+            timestamp: new Date().toISOString(),
+            duration: `${Date.now() - startTime}ms`,
+        });
+        res.status(500).json({
+            error: 'Login failed.',
+            message: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
 // Get current user
 router.get('/me', authenticate, async (req, res) => {
     try {
