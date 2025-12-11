@@ -19,6 +19,9 @@
         "nodemailer": "^7.0.11",
         "uuid": "^10.0.0"
     },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
+    },
     "devDependencies": {
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
