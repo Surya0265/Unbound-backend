@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  member
+}
+
+enum UserTier {
+  junior
+  senior
+  lead
+}
+
+enum RuleAction {
+  AUTO_ACCEPT
+  AUTO_REJECT
+  REQUIRE_APPROVAL
+}
+
+enum CommandStatus {
+  pending
+  executed
+  rejected
+  awaiting_approval
+}
+
+enum ApprovalDecision {
+  approved
+  rejected
+}
+
+model User {
+  id        String   @id @default(uuid())
+  apiKey    String   @unique @map("api_key")
+  name      String
+  role      Role     @default(member)
+  tier      UserTier @default(junior)
+  credits   Int      @default(100)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  commands     Command[]
+  rulesCreated Rule[]      @relation("RuleCreator")
+  approvals    Approval[]
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Rule {
+  id                String     @id @default(uuid())
+  pattern           String
+  action            RuleAction
+  priority          Int        @default(0)
+  approvalThreshold Int        @default(1) @map("approval_threshold")
+  timeRestrictions  Json?      @map("time_restrictions")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  createdById       String     @map("created_by_id")
+
+  createdBy       User      @relation("RuleCreator", fields: [createdById], references: [id])
+  matchedCommands Command[]
+
+  @@map("rules")
+}
+
+model Command {
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  commandText   String        @map("command_text")
+  status        CommandStatus @default(pending)
+  matchedRuleId String?       @map("matched_rule_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  executedAt    DateTime?     @map("executed_at")
+
+  user        User       @relation(fields: [userId], references: [id])
+  matchedRule Rule?      @relation(fields: [matchedRuleId], references: [id])
+  approvals   Approval[]
+
+  @@map("commands")
+}
+
+model Approval {
+  id         String           @id @default(uuid())
+  commandId  String           @map("command_id")
+  approverId String           @map("approver_id")
+  decision   ApprovalDecision
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  command  Command @relation(fields: [commandId], references: [id])
+  approver User    @relation(fields: [approverId], references: [id])
+
+  @@unique([commandId, approverId])
+  @@map("approvals")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  action    String
+  details   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
