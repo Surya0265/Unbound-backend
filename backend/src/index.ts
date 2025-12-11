@@ -16,8 +16,16 @@ import auditRoutes from './routes/audit';
 const app = express();
 const prisma = new PrismaClient();
 
+// CORS configuration - allow all origins for hackathon
+const corsOptions = {
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'X-API-Key', 'Authorization'],
+    credentials: false, // Set to false when using origin: '*'
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check endpoint
